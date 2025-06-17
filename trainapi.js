@@ -125,7 +125,31 @@ app.get('/test', async (req, res) => {
 
 app.get('/t', async (req, res) => {
     try{
-        const response = await fetch(`${URL}/stops`, {
+        const response = await fetch(`${URL}/routes`, {
+            headers: {
+                'X-Api-Key': APIKEY
+            }
+        });
+        
+        if(!response.ok){
+            throw new Error(`API request failed with status: ${response.status}`);
+        }
+
+        const trainInfo = await response.json();
+        const stopData = trainInfo["data"];
+        //res.send(Object.values(stopData).find(obj => obj.id === "7954"));
+        res.send(stopData);
+        //Object.values(stopData).find(obj => obj.id === "7954");
+    }
+    catch(error){
+        console.error(error);
+        res.status(500).json({error: error.message});
+    }
+});
+
+app.get('/m', async (req, res) => {
+    try{
+        const response = await fetch(`${URL}/stops?filter[route]=Orange`, {
             headers: {
                 'X-Api-Key': APIKEY
             }

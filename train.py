@@ -119,16 +119,32 @@ def getStops():
     except requests.exceptions.RequestException as e:
         print('Error in getStops. Error:', e)
         return None
+    
+def m():
+    headers = {
+        'X-Api-Key': APIKEY
+    }
+        
+    response = requests.get(f"{URL}/stops", headers = headers)
+    stop = response.json()
+    stopData = stop["data"]
+    
+    places = []
+    for place in stopData:
+        places.append({"name": place["id"], "municipality": place["attributes"]["municipality"], "name": place["attributes"]["name"], "description": place["attributes"]["description"], "at_street": place["attributes"]["at_street"], "on_street": place["attributes"]["on_street"]})
+    return places
 
 def main():
     #print(getStops())
     #print(getRoutes("Blue"))
     #print(getCommuterRoutes("CR-Kingston"))
-    stoppedCommuter("CR-Kingston")
-    stoppedTrains("Orange")
-    stoppedTrains("116")
+    #stoppedCommuter("CR-Kingston")
+    #stoppedTrains("Orange")
+    #stoppedTrains("116")
     #stoppedTrains("CR_Newburyport")
     #print(filterStop("70043"))
+    f = open("stops.txt", "w")
+    f.write(str(m()))
 
 if __name__ == '__main__':
     main()
@@ -136,3 +152,4 @@ if __name__ == '__main__':
 # "1001011101" each bit is a stop; string return; 1 at station 0 not station; blue line 12 stops
 #bowdoin, gov center, state, aquarium, maverick, airport, wood island, orient heights, suffolk downs, beachmont, revere beach, wonderland
 #Green-B, CR-Newburyport
+
